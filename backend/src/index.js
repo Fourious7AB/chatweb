@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.NODE_ENV === "production" ? process.env.FRONTEND_URL : "http://localhost:5173",
     credentials: true,
   })
 );
@@ -28,7 +28,7 @@ app.use(
 // Set Content Security Policy headers
 app.use((req, res, next) => {
   res.set({
-    'Content-Security-Policy': "default-src 'self'; connect-src 'self' http://localhost:5001; script-src 'self'; style-src 'self'; img-src 'self' data:"
+    'Content-Security-Policy': "default-src 'self'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:"
   });
   next();
 });

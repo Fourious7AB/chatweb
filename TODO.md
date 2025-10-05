@@ -1,6 +1,7 @@
-# TODO: Fix Build Issues
+# TODO for Render Deployment
 
-- [x] Run `npm audit fix` in backend directory to address vulnerabilities (completed: 0 vulnerabilities remaining)
-- [x] Run `npm audit fix` in frontend directory to address vulnerabilities (completed: 3 moderate vulnerabilities remaining, related to esbuild/vite)
-- [x] Update browserslist database in frontend directory (completed: updated to latest)
-- [x] Re-run `npm run build` to verify all issues are resolved (completed: build successful, no errors)
+- [x] Update backend/src/index.js: Fix CORS and CSP for deployment
+- [x] Build frontend: Run npm run build in root
+- [ ] Deploy backend on Render: Node.js service with environment variables
+- [ ] Deploy frontend on Render: Static site from dist folder
+- [ ] Update frontend axios baseURL if needed for deployed backend URL
