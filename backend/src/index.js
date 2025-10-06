@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import path from "path";
+import { fileURLToPath } from "url";
 
 import { connectDB } from "./lib/db.js";
 
@@ -11,16 +12,18 @@ import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { app, server } from "./lib/socket.js";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const PORT = process.env.PORT || 5001;
-const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "production" ? process.env.FRONTEND_URL : "http://localhost:5173",
+    origin: true,
     credentials: true,
   })
 );
@@ -28,12 +31,12 @@ app.use(
 // Set Content Security Policy headers
 app.use((req, res, next) => {
   res.set({
-    'Content-Security-Policy': "default-src 'self'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:"
+    'Content-Security-Policy': "default-src 'self'; connect-src 'self' ws: wss:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:"
   });
   next();
 });
 
-app.get("/", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.json({ message: "Backend API is running on port 5001" });
 });
 
@@ -41,10 +44,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+    res.sendFile(path.join(__dirname, "../../frontend", "dist", "index.html"));
   });
 }
 
